@@ -16,7 +16,7 @@ function createArchiveDirectoryTree(){
     mkdir -p "${desktopDirectory}/archive/Purge_Candidates"
 }
 
-function doFileClean-upMaintenance(){
+function doFileCleanupMaintenance(){
 echo getListOfFiles
 
 }
@@ -24,7 +24,11 @@ echo getListOfFiles
 function getListOfFiles(){
 for file in "${desktopDirectory}/*"
 do
-  echo "$entry"
+  echo "$entry" #stat -f "%Sm" -t "%Y-%m-%d %H:%M" <- Provides last 
+  #Get all Documents in Desktop or in folder within the desktop
+  #Loop over files
+  #     Rename to "dateLastOpened_File Name
+  #     Mv the file to of the three folder according to how long it was since last time it was modified
 done
 }
 
