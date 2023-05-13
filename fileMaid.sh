@@ -5,6 +5,11 @@ Creates an archived folder in the Desktop and organizes the files withing the fo
 
 Also renames the file to prepend the file name with the date of the last time it was accessed.
 commentBlock
+curDirectory = pwd;
+echo "Current directory: $curDirectory";
+read -p "Enter a Path, or press Enter to organize the files in the current directory: " r1;
+
+if [ -z "$r1" ];
 
 desktopDirectory=~/Desktop/ 
 [ -d "${desktopDirectory}" ] && echo "Directory exists." || createArchiveDirectoryTree
