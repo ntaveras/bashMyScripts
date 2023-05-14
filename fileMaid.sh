@@ -5,44 +5,57 @@ Creates an archived folder in the Desktop and organizes the files withing the fo
 
 Also renames the file to prepend the file name with the date of the last time it was accessed.
 commentBlock
-curDirectory=$(pwd);
-echo "Current directory: $curDirectory";
-read -p "Enter a Path, or press Enter to organize the files in the current directory: " r1
+DEFAULT_DIR=~+/
+function requestPath(){
+  read -p "Organize $DEFAULT_DIR, or input a valid path to the directory you'd like to organize: " InputDirectory
+}
 
-#if [ -z "$r1" ];
+requestPath
 
-desktopDirectory="~/Desktop/"
-if [ -d "${desktopDirectory}" ];
-then echo "Directory exists." 
- else 
- echo "Directory does NOT exists." 
- fi
+if [ -z "$InputDirectory" ]; then 
+targetDirectory=$DEFAULT_DIR
+echo "string empty"
+else
+  echo "string NOT empty."
+  if [ -d $InputDirectory ]; then
+  echo "valid directory"
+  targetDirectory=$InputDirectory
+  else
+  echo "$InputDirectory is not a directory path."
+  requestPath
+  fi
+fi
+
+function createArchiveDirectoryTree (){
+    mkdir -p "$1"
+    echo "Created ==> $1"
+}
+
+cd "$targetDirectory"
 
 subDirectories=("/archive/Viewed_Less_Then_7_Days_Ago" "/archive/Viewed_Less_Then_30_Days_Ago" "/archive/Viewed_Over_Then_31_Days_Ago" "/archive/Purge_Candidates")
-
+mkdir archive
+chmod archive 700
 for subDirectory in ${subDirectories[@]}; do
-if [ -d "~/Desktop/$subDirectory" ];
+tmp=$targetDirectory$subDirectory
+if [ -d "$tmp" ];
 then
-echo "|| Directory exists. $subDirectory" 
+echo "|| Directory exists ==> $tmp" 
 else
-echo "|| ~/Desktop/$subDirectory" 
+createArchiveDirectoryTree $tmp
 fi
 done
 
-function createArchiveDirectoryTree(){
-    mkdir -p "${desktopDirectory}/archive/Viewed_Less_Then_7_Days_Ago"
-    mkdir -p "${desktopDirectory}/archive/Viewed_Less_Then_30_Days_Ago"
-    mkdir -p "${desktopDirectory}/archive/Viewed_Over_Then_31_Days_Ago"
-    mkdir -p "${desktopDirectory}/archive/Purge_Candidates"
-}
+
 
 function doFileCleanupMaintenance(){
 echo getListOfFiles
 
 }
+exit
 
 #function getListOfFiles(){
-#for file in "${desktopDirectory}/*"
+#for file in "${targetDirectory}/*"
 #do
 #  echo "$entry" #stat -f "%Sm" -t "%Y-%m-%d %H:%M" <- Provides last 
   #Get all Documents in Desktop or in folder within the desktop
