@@ -5,53 +5,61 @@ Creates an archived folder in the Desktop and organizes the files withing the fo
 
 Also renames the file to prepend the file name with the date of the last time it was accessed.
 commentBlock
-DEFAULT_DIR=~+/
+
+# Functions
 function requestPath(){
-  read -p "Organize $DEFAULT_DIR, or input a valid path to the directory you'd like to organize: " InputDirectory
+  echo "Input a path relative path to the current directory [$DEFAULT_DIR], or leave empty to keep the current directory as the target to be organized."
+  read -p "Target path: " InputDirectory
 }
 
-requestPath
-
-if [ -z "$InputDirectory" ]; then 
-targetDirectory=$DEFAULT_DIR
-echo "string empty"
-else
-  echo "string NOT empty."
-  if [ -d $InputDirectory ]; then
-  echo "valid directory"
-  targetDirectory=$InputDirectory
+function validateInputPath(){
+  if [ -z "$1" ]; then 
+  targetDirectory=$DEFAULT_DIR
   else
-  echo "$InputDirectory is not a directory path."
-  requestPath
+    if [ -d $1 ]; then
+    echo "valid directory"
+    targetDirectory=$DEFAULT_DIR$1
+    else
+    echo "$1 is not a directory path." 
+    echo ""
+    requestPath
+    fi
   fi
-fi
+}
 
 function createArchiveDirectoryTree (){
     mkdir -p "$1"
     echo "Created ==> $1"
 }
 
-cd "$targetDirectory"
-
-subDirectories=("/archive/Viewed_Less_Then_7_Days_Ago" "/archive/Viewed_Less_Then_30_Days_Ago" "/archive/Viewed_Over_Then_31_Days_Ago" "/archive/Purge_Candidates")
-mkdir archive
-chmod archive 700
+function createArchivalDirectories(){
+subDirectories=("archive/Viewed_Less_Then_7_Days_Ago" "archive/Viewed_Less_Then_30_Days_Ago" "archive/Viewed_Over_Then_31_Days_Ago" "archive/Purge_Candidates")
 for subDirectory in ${subDirectories[@]}; do
-tmp=$targetDirectory$subDirectory
-if [ -d "$tmp" ];
-then
-echo "|| Directory exists ==> $tmp" 
-else
-createArchiveDirectoryTree $tmp
-fi
+  tmp=$subDirectory
+  [ ! -d "$subDirectory" ] && createArchiveDirectoryTree $subDirectory
 done
-
-
-
-function doFileCleanupMaintenance(){
-echo getListOfFiles
-
 }
+
+function getListOfFIles(){
+  echo "$targetDirectory"
+  for file in "/*"; do
+    echo "$file" #stat -f "%Sm" -t "%Y-%m-%d %H:%M"
+  done
+}
+
+#Script 
+DEFAULT_DIR=~+/ #current directory
+requestPath
+validateInputPath $InputDirectory
+cd "$targetDirectory"
+createArchivalDirectories
+getListOfFiles
+
+#function doFileCleanupMaintenance(){
+#}
+
+
+
 exit
 
 #function getListOfFiles(){
