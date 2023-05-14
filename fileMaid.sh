@@ -5,14 +5,29 @@ Creates an archived folder in the Desktop and organizes the files withing the fo
 
 Also renames the file to prepend the file name with the date of the last time it was accessed.
 commentBlock
-curDirectory = pwd;
+curDirectory=$(pwd);
 echo "Current directory: $curDirectory";
-read -p "Enter a Path, or press Enter to organize the files in the current directory: " r1;
+read -p "Enter a Path, or press Enter to organize the files in the current directory: " r1
 
-if [ -z "$r1" ];
+#if [ -z "$r1" ];
 
-desktopDirectory=~/Desktop/ 
-[ -d "${desktopDirectory}" ] && echo "Directory exists." || createArchiveDirectoryTree
+desktopDirectory="~/Desktop/"
+if [ -d "${desktopDirectory}" ];
+then echo "Directory exists." 
+ else 
+ echo "Directory does NOT exists." 
+ fi
+
+subDirectories=("/archive/Viewed_Less_Then_7_Days_Ago" "/archive/Viewed_Less_Then_30_Days_Ago" "/archive/Viewed_Over_Then_31_Days_Ago" "/archive/Purge_Candidates")
+
+for subDirectory in ${subDirectories[@]}; do
+if [ -d "~/Desktop/$subDirectory" ];
+then
+echo "|| Directory exists. $subDirectory" 
+else
+echo "|| ~/Desktop/$subDirectory" 
+fi
+done
 
 function createArchiveDirectoryTree(){
     mkdir -p "${desktopDirectory}/archive/Viewed_Less_Then_7_Days_Ago"
@@ -26,17 +41,13 @@ echo getListOfFiles
 
 }
 
-function getListOfFiles(){
-for file in "${desktopDirectory}/*"
-do
-  echo "$entry" #stat -f "%Sm" -t "%Y-%m-%d %H:%M" <- Provides last 
+#function getListOfFiles(){
+#for file in "${desktopDirectory}/*"
+#do
+#  echo "$entry" #stat -f "%Sm" -t "%Y-%m-%d %H:%M" <- Provides last 
   #Get all Documents in Desktop or in folder within the desktop
   #Loop over files
   #     Rename to "dateLastOpened_File Name
   #     Mv the file to of the three folder according to how long it was since last time it was modified
-done
-}
-
-function updateFileName(){
-
-}
+#done
+#}
