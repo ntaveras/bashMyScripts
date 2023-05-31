@@ -54,6 +54,7 @@ function getListOfFIles(){
   echo "$targetDirectory"
   for file in "/*"; do
     echo "$file" #stat -f "%Sm" -t "%Y-%m-%d %H:%M"
+    getLastAccessedAgeInDays=(getLastAccessedAgeInDays file)
   done
 }
 
