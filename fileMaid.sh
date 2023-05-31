@@ -40,6 +40,16 @@ for subDirectory in ${subDirectories[@]}; do
 done
 }
 
+function getLastAccessedAgeInDays() {
+  SECONDS_IN_A_DAY=86400
+  file_path="$1"
+  current_time=$(date +%s)
+  access_time=$(stat -c %X "$file_path")
+  seconds_diff=$((current_time - access_time))
+  age_in_days=$((seconds_diff / SECONDS_IN_A_DAY))  # 86400 seconds in a day
+  echo "$age_in_days"
+}
+
 function getListOfFIles(){
   echo "$targetDirectory"
   for file in "/*"; do
